@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "Fading.h"
 
+// Constructor
 Fading::Fading(byte pwmPin, byte minVal = 0, byte maxVal = 255, unsigned int fadeTime = 2000)
 {
     _pwmPin = pwmPin;
@@ -54,4 +55,5 @@ void Fading::calculateTimerPeriod() {
 
 byte Fading::getBrightness() { return _brightness; };
 
+// indicates whether the transition is in progress or not
 bool Fading::isInProgress() { return !(_brightness == _minVal || _brightness == _maxVal); }
