@@ -1,0 +1,6 @@
+{
+    "board": "arduino:avr:leonardo",
+    "port": "COM5",
+    "programmer": "AVR ISP",
+    "sketch": "examples\\fading_example\\fading_example.ino"
+}
