@@ -24,5 +24,5 @@ class Fading
         bool _state;
 
         void calculateTimerPeriod();
-        bool Fading::isInProgress();
+        bool isInProgress();
 };

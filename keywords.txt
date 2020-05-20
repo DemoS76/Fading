@@ -1,0 +1,27 @@
+#######################################
+# Syntax Coloring Map For Fading
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+setMinVal               KEYWORD2
+setMaxVal               KEYWORD2
+setBrightness	        KEYWORD2
+setFadeTime             KEYWORD2
+transition              KEYWORD2
+getMinVal               KEYWORD2
+getMaxVal               KEYWORD2
+getBrightness           KEYWORD2
+getFadeTime             KEYWORD2
+calculateTimerPeriod    KEYWORD2
+isInProgress            KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
