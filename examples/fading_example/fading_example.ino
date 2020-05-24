@@ -1,40 +1,45 @@
-// led pin number (must be PWM)
+// LED pin number (must be PWM).
 #define LED_PIN 3
 
-// connects the lib
+// Connects the lib.
 #include "Fading.h"
 
 // Creates Fading object and configs it.
-// Params: LED(PWM) pin number, minimal value for PWM, maximum value for PWM, transition time from minimum to maximum value.
-Fading fading(LED_PIN, 10, 255, 1000);
+// Params: minimal value, maximum value, transition time from minimum to maximum value.
+Fading fading(10, 255, 1000);
 
-// timer for control of fading process
+// Timer for control of fading process.
 unsigned long timer;
 
-// current state of the fading
+// Current state of the fading.
 bool flag;
 
-// current PWM value
+// Current PWM value.
 byte curBrightness;
 
 void setup() {
   Serial.begin(9600);
+  pinMode(LED_PIN, OUTPUT);
+
+  // Inits LED value
+  analogWrite(LED_PIN, fading.getCurrentValue());
 }
 
 void loop() {
-  // switching the state once per 3 sec
+  // Switching state once per 3 sec.
   if (millis() - timer >= 3000)
   {
     flag = !flag;
     timer = millis();
   }
 
-  // makes start the transition from min to max value if parameter is true
+  // Makes to start the transition from min to max value if the parameter is true.
   fading.transition(flag);
-  
-  // print current PWM value
-  if (curBrightness != fading.getBrightness()){
-    curBrightness = fading.getBrightness();
-    Serial.println(fading.getBrightness());
+
+  // Print current PWM value
+  if (curBrightness != fading.getCurrentValue()){
+    curBrightness = fading.getCurrentValue();
+    analogWrite(LED_PIN, curBrightness);
+    Serial.println(curBrightness);
   }
 }

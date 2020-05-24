@@ -2,33 +2,29 @@
 #include "Fading.h"
 
 // Constructor
-Fading::Fading(byte pwmPin, byte minVal = 0, byte maxVal = 255, unsigned int fadeTime = 2000)
+Fading::Fading(unsigned int minVal = 0, unsigned int maxVal = 255, unsigned int fadeTime = 2000)
 {
-    _pwmPin = pwmPin;
     _minVal = minVal;
     _maxVal = maxVal;
     _fadeTime = fadeTime;
-    _brightness = minVal;
+    _currentValue = minVal;
 
     calculateTimerPeriod();
-
-    pinMode(pwmPin, OUTPUT);
-    analogWrite(pwmPin, _brightness);
 }
 
-void Fading::setMinVal(byte minVal) 
+void Fading::setMinVal(unsigned int minVal) 
 {
     _minVal = minVal;
     calculateTimerPeriod();
 }
-byte Fading::getMinVal() { return _minVal; }
+unsigned int Fading::getMinVal() { return _minVal; }
 
-void Fading::setMaxVal(byte maxVal)
+void Fading::setMaxVal(unsigned int maxVal)
 {
     _maxVal = maxVal;
     calculateTimerPeriod();
 }
-byte Fading::getMaxVal() { return _maxVal; }
+unsigned int Fading::getMaxVal() { return _maxVal; }
 
 void Fading::setFadeTime(unsigned int fadeTime)
 {
@@ -41,19 +37,44 @@ unsigned int Fading::getFadeTime() { return _fadeTime; }
 void Fading::transition(bool transition) {
     if (isInProgress() || _state != transition){
         _state = transition;
-        if (millis() - _fadeTimer >= _timerPeriod) {
-            analogWrite(_pwmPin, _state ? _brightness++ : --_brightness);
-            _fadeTimer = millis();
+
+        bool isReady = _timerScale == TimerScale::milSec
+            ? millis() - _fadeTimer >= _timerPeriod
+            : micros() - _fadeTimer >= _timerPeriod;
+
+        if (isReady) {
+            _state ? ++_currentValue : --_currentValue;
+
+            if (_transitionCallback) {
+                _transitionCallback(_currentValue);
+            }
+
+            _timerScale == TimerScale::milSec
+            ? _fadeTimer = millis()
+            : _fadeTimer = micros();
         }
     }
 };
 
 void Fading::calculateTimerPeriod() {
-    byte delta = _maxVal - _minVal;
-    _timerPeriod = _fadeTime / delta;
+    unsigned int delta = _maxVal - _minVal;
+
+    // timer scaling
+    if (delta > _fadeTime) {
+        _timerScale = TimerScale::micSec;
+        _timerPeriod = _fadeTime * 1000 / delta;
+    } else
+    {
+        _timerScale = TimerScale::milSec;
+        _timerPeriod = _fadeTime / delta;
+    }
 };
 
-byte Fading::getBrightness() { return _brightness; };
+unsigned int Fading::getCurrentValue() { return _currentValue; };
 
 // indicates whether the transition is in progress or not
-bool Fading::isInProgress() { return !(_brightness == _minVal || _brightness == _maxVal); }
+bool Fading::isInProgress() { return !(_currentValue == _minVal || _currentValue == _maxVal); }
+
+void Fading::setTransitionCallback(TransitionCallback transitionCallback){
+    _transitionCallback = transitionCallback;
+};

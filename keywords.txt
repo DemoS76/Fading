@@ -5,19 +5,20 @@
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
-
+TransitionCallback      KEYWORD1
+TimerScale              KEYWORD1
+Fading                  KEYWORD1
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
-
 setMinVal               KEYWORD2
 setMaxVal               KEYWORD2
-setBrightness	        KEYWORD2
 setFadeTime             KEYWORD2
 transition              KEYWORD2
+setTransitionCallback   KEYWORD2
 getMinVal               KEYWORD2
 getMaxVal               KEYWORD2
-getBrightness           KEYWORD2
+getCurrentValue         KEYWORD2
 getFadeTime             KEYWORD2
 calculateTimerPeriod    KEYWORD2
 isInProgress            KEYWORD2
